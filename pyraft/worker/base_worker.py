@@ -12,27 +12,33 @@ class BaseWorker(Worker):
 
     # inherit & extend this interface
     def init_base_handler(self):
-        self.handler['info'] = [self.do_info, 'r', 0, 0]
-        self.handler['shutdown'] = [self.do_shutdown, 'e', 0, 0]
-        self.handler['quit'] = [self.do_quit, 'r', 0, 0]
+        self.handler["info"] = [self.do_info, "r", 0, 0]
+        self.handler["shutdown"] = [self.do_shutdown, "e", 0, 0]
+        self.handler["quit"] = [self.do_quit, "r", 0, 0]
 
-        self.handler['add_node'] = [self.do_add_node, 'we', 2, 2]
-        self.handler['del_node'] = [self.do_del_node, 'we', 1, 1]
-        self.handler['checkpoint'] = [self.do_checkpoint, 'r', 0, 0]
-        self.handler['getdump'] = [self.do_getdump, 'r', 0, 0]
-        self.handler['getlog'] = [self.do_getlog, 'r', 0, 2]
+        self.handler["add_node"] = [self.do_add_node, "we", 2, 2]
+        self.handler["del_node"] = [self.do_del_node, "we", 1, 1]
+        self.handler["checkpoint"] = [self.do_checkpoint, "r", 0, 0]
+        self.handler["getdump"] = [self.do_getdump, "r", 0, 0]
+        self.handler["getlog"] = [self.do_getlog, "r", 0, 2]
 
     def do_info(self, node, words):
         peers = {}
         for nid, p in node.get_peers().items():
-            peers[nid] = {'state': p.state, 'addr': p.addr, 'term': p.term, 'index': p.index}
+            peers[nid] = {"state": p.state, "addr": p.addr, "term": p.term, "index": p.index}
 
-        info = {'nid': node.nid, 'state': node.state, 'term': node.term, 'index': node.index,
-                'peers': peers, 'last_checkpoint': node.last_checkpoint}
+        info = {
+            "nid": node.nid,
+            "state": node.state,
+            "term": node.term,
+            "index": node.index,
+            "peers": peers,
+            "last_checkpoint": node.last_checkpoint,
+        }
         return str(info).replace("'", '"')
 
     def do_quit(self, node, words):
-        return {'quit': True}
+        return {"quit": True}
 
     def do_shutdown(self, node, words):
         node.shutdown()
@@ -73,4 +79,3 @@ class BaseWorker(Worker):
 
         result = node.log.get_range(start, end)
         return result.__repr__()
-

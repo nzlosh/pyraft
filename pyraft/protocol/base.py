@@ -2,10 +2,11 @@ import socket, select
 
 from pyraft.common import *
 
+
 class base_io:
     def __init__(self, sock):
         self.sock = sock
-        self.buff = b''
+        self.buff = b""
         self.timeout = -1
 
         self.last_decodable = False
@@ -65,22 +66,22 @@ class base_io:
 
         while True:
             readable = False
-            if timeout != None: # avoid useless decodable check
+            if timeout != None:  # avoid useless decodable check
                 if self.last_decodable == False and self.last_buff_len == len(self.buff):
                     reads, writes, excepts = select.select([self.sock], [], [], timeout)
                     if len(reads) == 0:
-                        return b''
+                        return b""
                     else:
                         readable = True
 
             self.last_decodable = True
             if not self.decodable(self.buff):
-                if timeout != None and not readable: # skip double wait
+                if timeout != None and not readable:  # skip double wait
                     reads, writes, excepts = select.select([self.sock], [], [], timeout)
                     if len(reads) == 0:
                         self.last_decodable = False
                         self.last_buff_len = len(self.buff)
-                        return b''
+                        return b""
 
                 try:
                     tmp = self.sock.recv(4096)
@@ -91,7 +92,7 @@ class base_io:
                     self.close()
                     return None
 
-                if tmp == b'':
+                if tmp == b"":
                     self.close()
                     return None
 
@@ -104,7 +105,7 @@ class base_io:
                     if len(reads) == 0:
                         self.last_decodable = False
                         self.last_buff_len = len(self.buff)
-                        return b''
+                        return b""
 
                 try:
                     tmp = self.sock.recv(4096)
@@ -112,7 +113,7 @@ class base_io:
                     self.close()
                     return None
 
-                if tmp == b'':
+                if tmp == b"":
                     self.close()
                     return None
 
@@ -129,7 +130,7 @@ class base_io:
             if ret == None:
                 return None
 
-            if ret == b'':
+            if ret == b"":
                 break
 
             result.append(ret)
@@ -151,4 +152,3 @@ class base_io:
 
     def decodable(self, buff):
         pass
-

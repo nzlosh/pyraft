@@ -16,12 +16,12 @@ class Worker:
         self.p = None
 
         self.addr = addr
-        self.ip, self.port = addr.split(':')
+        self.ip, self.port = addr.split(":")
         self.port = int(self.port)
-        self.worker_offset = 0 # offset between node baseport
+        self.worker_offset = 0  # offset between node baseport
 
     def init_node(self, node):
-        pass # inherit for worker specific node init
+        pass  # inherit for worker specific node init
 
     def set_protocol(self, p):
         self.p = p
@@ -49,7 +49,13 @@ class Worker:
         while True:
             try:
                 sock, addr = self.worker_listen_sock.accept()
-                wt = threading.Thread(target=self.process_work, args=(node, sock,))
+                wt = threading.Thread(
+                    target=self.process_work,
+                    args=(
+                        node,
+                        sock,
+                    ),
+                )
                 wt.start()
             except socket.timeout:
                 if self.shutdown_flag:
@@ -72,30 +78,30 @@ class Worker:
 
             words = pio.read(timeout=1.0)
             if words == None:
-                node.log_info('disconnected')
+                node.log_info("disconnected")
                 pio.close()
                 return
 
-            if isinstance(words, str): # resp inline command
+            if isinstance(words, str):  # resp inline command
                 words = words.split()
 
-            if words == b'' or words == ['']:
+            if words == b"" or words == [""]:
                 continue
 
             if len(words) > 0:
                 handler = self.get_handler(words[0].lower())
                 if handler == None:
-                    pio.write(Exception('Unknown command: %s' % words[0]))
+                    pio.write(Exception("Unknown command: %s" % words[0]))
                     continue
 
                 p_min = handler[2]
                 p_max = handler[3]
                 if len(words) - 1 < p_min:
-                    pio.write(Exception('insufficient param'))
+                    pio.write(Exception("insufficient param"))
                     continue
 
                 if p_max > 0 and len(words) - 1 > p_max:
-                    pio.write(Exception('too many param'))
+                    pio.write(Exception("too many param"))
                     continue
 
                 try:
@@ -103,22 +109,22 @@ class Worker:
                 except RaftException as e:
                     ret = e
                 except Exception as e:
-                    print('unexpected exception: ', traceback.format_exc())
+                    print("unexpected exception: ", traceback.format_exc())
                     ret = e
 
                 # for special actions (like quit)
                 if isinstance(ret, dict):
-                    if 'bypass' in ret:
-                        pio.raw_write(ret['bypass'])
+                    if "bypass" in ret:
+                        pio.raw_write(ret["bypass"])
                         continue
 
-                    if 'quit' in ret:
+                    if "quit" in ret:
                         pio.close()
                         return
 
                     # some protocols have to send something before closing
-                    if 'quit_after_send' in ret:
-                        pio.write(ret['quit_after_send'])
+                    if "quit_after_send" in ret:
+                        pio.write(ret["quit_after_send"])
                         pio.close()
                         return
 
@@ -127,8 +133,8 @@ class Worker:
     def relay_cmd(self, leader, cmd, worker_offset):
         p = leader
         try:
-            if not hasattr(p, 'req_io'):
-                ip, port = p.addr.split(':')
+            if not hasattr(p, "req_io"):
+                ip, port = p.addr.split(":")
                 port = int(port) + worker_offset
                 sock = socket.socket()
                 sock.connect((ip, port))
@@ -139,8 +145,8 @@ class Worker:
 
         except Exception as e:
             p.req_io.close()
-            delattr(p, 'req_io')
-            raise RaftException('relay to leader has exception: %s' % str(e))
+            delattr(p, "req_io")
+            raise RaftException("relay to leader has exception: %s" % str(e))
 
 
 class MergedWorker(Worker):

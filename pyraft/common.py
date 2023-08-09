@@ -7,6 +7,7 @@ CONF_LOG_FILE_MAX = 10000
 CONF_VOTING_TIME = 1.0
 CONF_PING_TIMEOUT = 5  # re-elect leader after CONF_PING_TIMEOUT
 
+
 def intcast(src):
     if isinstance(src, int):
         return src
@@ -17,15 +18,17 @@ def intcast(src):
     return int(src)
 
 
-ERROR_CAST = Exception('number format error')
-ERROR_APPEND_ENTRY = Exception('append entry failed')
-ERROR_TYPE = Exception('invalid data type')
-ERROR_NOT_EXISTS = Exception('not exists')
-ERROR_INVALID_PARAM = Exception('invalid parameter')
+ERROR_CAST = Exception("number format error")
+ERROR_APPEND_ENTRY = Exception("append entry failed")
+ERROR_TYPE = Exception("invalid data type")
+ERROR_NOT_EXISTS = Exception("not exists")
+ERROR_INVALID_PARAM = Exception("invalid parameter")
+
 
 class RaftException(Exception):
     def __init__(self, msg):
         super().__init__(msg)
+
 
 class Future(object):
     def __init__(self, cmd, worker_offset=0):
@@ -51,11 +54,13 @@ class Future(object):
             self.value = value
             self.cond.notify()
 
+
 def bytes_to_str(b):
     out = []
     for c in b:
-        out.append('%02x' % c)
+        out.append("%02x" % c)
 
-    return ' '.join(out)
+    return " ".join(out)
 
-logger = logging.getLogger('pyraft')
+
+logger = logging.getLogger("pyraft")

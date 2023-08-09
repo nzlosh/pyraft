@@ -3,6 +3,7 @@ import threading, queue
 from pyraft.common import *
 from pyraft.protocol import resp
 
+
 class LogItem(object):
     def __init__(self, term, index, ts, worker_offset, cmd):
         self.term = term
@@ -21,8 +22,8 @@ class LogItem(object):
 class LogFile(object):
     def __init__(self, nid, seq):
         self.seq = seq
-        self.fn = 'raft_%s_%010d.log' % (nid, seq)
-        self.fh = open(self.fn, 'w')
+        self.fn = "raft_%s_%010d.log" % (nid, seq)
+        self.fh = open(self.fn, "w")
         self.count = 0
         self.start = 0
         self.end = 0
@@ -46,7 +47,7 @@ class LogFile(object):
 
     def get_range(self, start, end=-1):
         decoded = []
-        fh = open(self.fn, 'r')
+        fh = open(self.fn, "r")
         remain = fh.read()
 
         while True:
@@ -56,7 +57,7 @@ class LogFile(object):
 
             decoded.append(LogItem(l[0], l[1], l[2], l[3], l[4]))
 
-            if remain == '':
+            if remain == "":
                 break
 
         result = []
@@ -227,6 +228,3 @@ class RaftLog(object):
 
     def close(self):
         self.log.close()
-
-
-
