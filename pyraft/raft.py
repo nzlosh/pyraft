@@ -1,15 +1,17 @@
-import time, traceback, select
-import random, queue
 import argparse
+import queue
+import random
+import select
+import time
+import traceback
 from logging.handlers import RotatingFileHandler
 
 from pyraft.common import *
+from pyraft.log import LogItem, RaftLog
 from pyraft.protocol import resp
-from pyraft.log import RaftLog
-from pyraft.log import LogItem
-from pyraft.worker.worker import MergedWorker
-from pyraft.worker.redis_worker import RedisWorker
 from pyraft.worker.base_worker import BaseWorker
+from pyraft.worker.redis_worker import RedisWorker
+from pyraft.worker.worker import MergedWorker
 
 
 class RaftNode(object):
