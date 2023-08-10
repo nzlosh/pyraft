@@ -4,7 +4,7 @@ import setuptools
 from setuptools import setup
 from os import path
 
-__version__ = "0.1.4"
+__version__ = "0.2.0"
 
 requirements = [req.strip() for req in open("requirements.txt").readlines()]
 
@@ -16,10 +16,10 @@ setup(
     version=__version__,
     description=short_description,
     long_description=short_description,
-    author="Lee, Ki-Yeul",
-    author_email="lynix94@gmail.com",
+    author="PyRaft collaborators",
+    author_email="nzlosh@yahoo.com",
     license="MIT",
-    url="https://github.com/lynix94/pyraft",
+    url="https://github.com/nzlosh/pyraft",
     keywords=["python", "raft", "replication", "pyraft"],
     install_requires=requirements,
     python_requires=">=3",
